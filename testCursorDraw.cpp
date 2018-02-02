@@ -8,7 +8,6 @@
 #include <string>
 #include <sstream>
 
-#include<opencv2/opencv.hpp>
 #include <stdio.h>
 #include <stdlib.h>
 #include "opencv2/highgui/highgui.hpp" // for mouse clicks and ui
@@ -52,12 +51,14 @@ void onMouse(int event, int x, int y, int flags, void* param)
 	if ((event == cv::MouseEventTypes::EVENT_MOUSEMOVE) && par->LButtonDown)
 	{
 		//cout << "Mouse move over the window - position (" << x << ", " << y << ")" << endl;
-		(par->coord).push_back(cv::Point(x, y));
-		cv::line( *img1, par->coord[par->size - 1],par->coord[par->size], 0, 2, 8);
-		(par->size)++;
-		cout << par->coord[par->size-1] << endl;
-		cout << par->size << endl;
-		cv::imshow("inputFromImage", *img1);
+		if (((x > 0) && (x < img1->cols)) && ((y > 0) && (y < img1->rows))) {
+			(par->coord).push_back(cv::Point(x, y));
+			cv::line( *img1, par->coord[par->size - 1],par->coord[par->size], 0, 2, 8);
+			(par->size)++;
+			cout << par->coord[par->size-1] << endl;
+			cout << par->size << endl;
+			cv::imshow("inputFromImage", *img1);
+		}
 	}
 	if (event == cv::MouseEventTypes::EVENT_LBUTTONUP)
 	{
