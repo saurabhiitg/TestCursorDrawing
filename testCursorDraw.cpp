@@ -31,7 +31,6 @@ typedef struct {
 	bool bExit = false;
 	vector < cv::Point > coord;
 } BM;
-int thresh = 50;
 
 void onMouse(int event, int x, int y, int flags, void* param)
 {
@@ -82,7 +81,9 @@ void onMouse(int event, int x, int y, int flags, void* param)
 
 
 void showLabeledImage(string imageName, int numberOfClasses) {
-
+	
+	//cv::destroyAllWindows();
+	
 	cv::Mat img = cv::imread(imageName.c_str(), 1), img_color;
 
 	// Convert image to color
@@ -211,6 +212,9 @@ void showLabeledImage(string imageName, int numberOfClasses) {
 
 
 void polygonFromMouse(string imageName, int numberOfClasses, int classLabel) {
+
+	cv::destroyAllWindows();
+
 	cv::Mat img = cv::imread(imageName.c_str(),1), img_color;
 	
 	// Convert image to color
@@ -337,199 +341,9 @@ int main() {
 	string imgTestFileName = "./Nital/frame-1N.jpg";
 
 	polygonFromMouse(imgTestFileName, 3, 1);
+	polygonFromMouse(imgTestFileName, 3, 2);
+	polygonFromMouse(imgTestFileName, 3, 3);
 	showLabeledImage(imgTestFileName, 3);
-
-	//cv::Mat img = cv::imread(imgTestFileName.c_str(), 0), img_gray;
-
-	//// Convert image to gray
-	//if (img.channels() == 3) {
-	//	cv::cvtColor(img, img_gray, CV_BGR2GRAY);
-	//}
-	//else {
-	//	img_gray = img.clone();
-	//}
-
-	//cv::Mat img_gray_out_filled = img_gray.clone();
-	//cv::cvtColor(img_gray, img_gray_out_filled, CV_GRAY2BGR);
-	//cv::Mat img_gray_out_filled_clone = img_gray_out_filled.clone();
-	//double alpha = 0.3;
-
-	//cv::namedWindow("inputFromImage", cv::WINDOW_NORMAL);
-	//cv::imshow("inputFromImage", img_gray);
-
-	//BM mouseOut;
-	//mouseOut.img = &img_gray;
-	//cv::setMouseCallback("inputFromImage", onMouse, (void *)(&mouseOut));
-
-	//while (!mouseOut.bExit)
-	//{
-	//	cv::waitKey(30);
-	//}
-
-	////
-
-	//int thickness = 4;
-	//int lineType = 8;
-
-	//// for accessing all the files in the directory
-	////https://stackoverflow.com/questions/612097/how-can-i-get-the-list-of-files-in-a-directory-using-c-or-c/37494654#37494654
-	//string path = "./Label/";
-	//if (!fs::is_directory(path)) {	// if directory is not there then create it
-	//	fs::create_directory(path);
-	//}
-
-	//vector < string > fileNames;
-	//for (auto & p : fs::directory_iterator(path)) {	// look for all csv files in that
-	//	string s;
-	//	s = p.path().string();
-	//	int len = s.length();
-	//	int plen = path.length();
-	//	if (len > 9) {
-	//		if ((s[len - 4] == '.') && (s[len - 3] == 'c') && (s[len - 2] == 's') && (s[len - 1] == 'v')) {
-	//			//cout << s.substr(plen, len - 4) << endl;;
-	//			if ((s[plen + 0] == 'l') && (s[plen + 1] == 'a') && (s[plen + 2] == 'b') && (s[plen + 3] == 'e') && (s[plen + 4] == 'l')) {
-	//				fileNames.push_back(s.substr(plen, len - 4));
-	//				//cout << s.substr(plen, len - 4) << endl;
-	//			}
-	//		}
-	//	}
-	//}
-
-	//vector < int > fileNumbers;
-	//for (int i = 0; i < fileNames.size(); i++) {
-	//	cout << fileNames[i] << endl;
-	//	if (1) {	// add check cond if all the chars are digits
-	//		fileNumbers.push_back(stoi(fileNames[i].substr(5)));
-	//	}
-	//}
-	//sort(fileNumbers.begin(), fileNumbers.end());
-
-	//int fileNumberGiven;
-	//if (fileNumbers.size()) {
-	//	fileNumberGiven = fileNumbers[fileNumbers.size() - 1] + 1;
-	//}
-	//else {
-	//	fileNumberGiven = 1;
-	//}
-
-	//// show previously labeled data
-	//string labeledFileNames;
-	//ifstream my_file_to_read;
-	//string curr_img_name_read;
-	//string line;
-	//char delim;
-	//int xx, yy;
-	//int num_of_class_read, label_read;
-	//for (int i = 0; i < fileNumbers.size(); i++) {
-	//	labeledFileNames = "./Label/label" + to_string(fileNumbers[i]) + ".csv";
-	//	vector <cv::Point> vp;
-
-	//	my_file_to_read.open(labeledFileNames.c_str());
-	//	// first line has the image name
-	//	my_file_to_read >> curr_img_name_read;
-	//	cout << "Image Name::" << curr_img_name_read << endl;
-	//	my_file_to_read >> num_of_class_read >> delim >> label_read;
-	//	cout << "Classes::" << num_of_class_read << " Class Label::" << label_read << endl;
-	//	// based on number of classes and class label decide color code
-	//	cv::Scalar mask_colour;
-	//	if (num_of_class_read <= 3) {
-	//		if (label_read == 1) {
-	//			mask_colour = Scalar(255, 0, 0);
-	//		}
-	//		else if (label_read == 2) {
-	//			mask_colour = Scalar(0, 255, 0);
-	//		}
-	//		else {
-	//			mask_colour = Scalar(0, 0, 255);
-	//		}
-	//	}
-	//	else{
-	//		mask_colour = Scalar(255, 0, 0);
-	//	}
-
-	//	int avgx, avgy;
-	//	avgx = avgy = 0;
-	//	while (my_file_to_read >> xx >> delim >> yy) {
-	//		avgx += xx;
-	//		avgy += yy;
-	//		vp.push_back(cv::Point(xx, yy));
-	//	}
-	//	int total_points = vp.size();
-	//	avgx /= total_points;
-	//	avgy /= total_points;
-	//	for (int j = 0; j < total_points; j++) {
-	//		cv::line(img_gray_out_filled, vp[j], vp[(j+1) % total_points], 0, 2, 8);
-	//	}
-	//	vector < vector < cv::Point > > tmpp1;
-	//	tmpp1.push_back(vp);
-	//	cv::fillPoly(img_gray_out_filled_clone, tmpp1, mask_colour, 8, 0); // fill the inside by 0's
-	//	//cv::waitKey(1);
-	//	cv::putText(img_gray_out_filled_clone, to_string(label_read), cv::Point(avgx,avgy), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255,255,255)-mask_colour,2,8);
-
-	//	my_file_to_read.close();
-	//}
-
-
-
-
-	//// for labeling images
-	//// to be written in metadata file
-	//int numberOfClasses = 3;
-	//int classLabel = 1;
-
-	////string imgTestFileName = "./Nital/frame-1N.jpg";
-	//stringstream ssF(imgTestFileName);
-	//string item;
-	//while (getline(ssF, item, '/')) {}	// imagename is saved in item
-
-
-	//string outFileName;
-	//outFileName = "./Label/label" + to_string(fileNumberGiven) + ".csv";
-	//cout << "Writing to ::" << outFileName << endl;
-	//ofstream my_file;
-	//my_file.open(outFileName.c_str());
-	//my_file << item << endl;
-	//my_file << numberOfClasses << "," << classLabel;
-
-	//int centroidx, centroidy;
-	//for (auto i : mouseOut.coord) {
-	//	centroidx += i.x;
-	//	centroidy += i.y;
-	//}
-	//centroidx /= mouseOut.coord.size();
-	//centroidy /= mouseOut.coord.size();
-
-
-
-	//for (auto i : mouseOut.coord) {
-	//	my_file << "\n" << i.x << ", " << i.y;
-	//	//cv::line(img_gray, i, i+cv::Point(i.x+10, i.y+10), 255, thickness, lineType);
-	//}
-	//my_file.close();
-
-	//
-	////cv::destroyAllWindows();
-	//vector < vector < cv::Point > > tmpp;
-	//cv::waitKey(0);
-
-	//tmpp.push_back(mouseOut.coord);
-	//cv::namedWindow("filled", cv::WINDOW_NORMAL);
-	////cv::fillPoly(img_gray_out_filled, tmpp, cv::Scalar(uchar(0)), 8, 0); // fill the inside by 0's
-	////https://stackoverflow.com/questions/24480751/how-to-create-a-semi-transparent-shape
-	//cv::addWeighted(img_gray_out_filled_clone, alpha, img_gray_out_filled,1.0-alpha, 0, img_gray_out_filled);
-
-	//cv::imshow("filled", img_gray_out_filled);
-	//cv::imwrite("test.jpg", img_gray_out_filled); // A JPG FILE IS BEING SAVED
-	//cv::waitKey(0);
-
-	//cv::Mat img_test,img1;
-	//img_test = cv::imread("test.jpg", CV_LOAD_IMAGE_UNCHANGED);
-	////cv::cvtColor(img1, img_test, CV_GRAY2RGB);
-
-
-
-	//cv::namedWindow("filled1", cv::WINDOW_NORMAL);
-	//cv::imshow("filled1", img_test);
 
 	cv::waitKey(0);
 
