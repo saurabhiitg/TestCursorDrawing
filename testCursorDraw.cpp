@@ -207,11 +207,31 @@ void showLabeledImage(string imageName, int numberOfClasses) {
 	cv::addWeighted(img_color_filled_clone, alpha, img_color_filled, 1.0 - alpha, 0, img_color_filled);
 
 	cv::imshow("ShowLabeledRegions", img_color_filled);
+	cv::imwrite(imagePath + "regionsSelected.jpg", img_color_filled);
+
 	return;
 }
 
 
-void polygonFromMouse(string imageName, int numberOfClasses, int classLabel) {
+void polygonFromMouse(string imageName, int numberOfClasses, int classLabel, bool selectionOnRegionImg) {
+
+	bool flag_regionImgExist = false;
+	string imageNameRegion(imageName);
+	cv::Mat img_region;
+
+	if (selectionOnRegionImg) {	// if user want to draw region on regional img
+		
+		stringstream ssT(imageName);	// to remove path from image name
+		string imageName_T;
+		while (getline(ssT, imageName_T, '/')) {}
+
+		imageNameRegion = "./Region/" + imageName_T + '/' + "regionsSelected.jpg";	// the img with regions
+	
+		if(fs::exists(imageNameRegion)){
+			flag_regionImgExist = true;
+			img_region = cv::imread(imageNameRegion.c_str(), 1);
+		}
+	}
 
 	cv::destroyAllWindows();
 
@@ -228,11 +248,19 @@ void polygonFromMouse(string imageName, int numberOfClasses, int classLabel) {
 	cv::Mat img_color_filled = img_color.clone();
 	cv::Mat img_color_filled_clone = img_color.clone();
 
-	cv::namedWindow("inputFromImage", cv::WINDOW_NORMAL);
-	cv::imshow("inputFromImage", img_color);
 
+	cv::namedWindow("inputFromImage", cv::WINDOW_NORMAL);
 	BM mouseOut;
-	mouseOut.img = &img_color;
+
+	if (flag_regionImgExist) {
+		cv::imshow("inputFromImage", img_region);
+		mouseOut.img = &img_region;
+	}
+	else {
+		cv::imshow("inputFromImage", img_color);
+		mouseOut.img = &img_color;
+	}
+	
 	cv::setMouseCallback("inputFromImage", onMouse, (void *)(&mouseOut));
 
 	while (!mouseOut.bExit)
@@ -331,19 +359,26 @@ void polygonFromMouse(string imageName, int numberOfClasses, int classLabel) {
 	tmpp.push_back(mouseOut.coord);
 	cv::namedWindow("Region Selected", cv::WINDOW_NORMAL);
 	cv::imshow("Region Selected", img_color);
+	cv::waitKey(0);
+	cv::imwrite(imagePath+"regions.jpg", img_color);
 
+	showLabeledImage(imageName, numberOfClasses);
 
 	return;
 }
 
 int main() {
 
-	string imgTestFileName = "./Nital/frame-1N.jpg";
+	//string imgTestFileName = "./Nital/frame-1N.jpg";
+	string imgTestFileName = "./Coal/364-2jpg.jpg";
+	//string imgTestFileName = "./Coal/364-4jpg0002.jpg";
+	//string imgTestFileName = "./Coal/364-5jpg0003.jpg";
 
-	polygonFromMouse(imgTestFileName, 3, 1);
-	polygonFromMouse(imgTestFileName, 3, 2);
-	polygonFromMouse(imgTestFileName, 3, 3);
-	showLabeledImage(imgTestFileName, 3);
+	polygonFromMouse(imgTestFileName, 3, 1, true);
+	//polygonFromMouse(imgTestFileName, 3, 2);
+	//polygonFromMouse(imgTestFileName, 3, 3);
+	//showLabeledImage(imgTestFileName, 3);
+
 
 	cv::waitKey(0);
 
