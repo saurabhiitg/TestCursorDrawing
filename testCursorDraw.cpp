@@ -171,18 +171,18 @@ void showLabeledImage(string imageName, int numberOfClasses) {
 		// based on number of classes and class label decide color code
 		cv::Scalar mask_colour;
 		if (num_of_class_read <= 3) {
-			if (label_read == 1) {
-				mask_colour = Scalar(255, 0, 0);
-			}
-			else if (label_read == 2) {
-				mask_colour = Scalar(0, 255, 0);
-			}
-			else {
-				mask_colour = Scalar(0, 0, 255);
-			}
+			mask_colour = Scalar((label_read == 1) ? 255 : 0, (label_read == 2) ? 255 : 0, (label_read == 3) ? 255 : 0);
 		}
-		else {
-			mask_colour = Scalar(255, 0, 0);
+		else if (num_of_class_read <= 8) {
+			mask_colour = Scalar((label_read - 1) & 1 ? 0 : 255, (label_read - 1) & 2 ? 0 : 255, (label_read - 1) & 4 ? 0 : 255);
+		}
+		else {	//basically <= 27
+			int bit1, bit2, bit3;
+			bit1 = ((label_read - 1) / 9) % 3;
+			bit2 = ((label_read - 1) / 3) % 3;
+			bit3 = (label_read - 1) % 3;
+			int color_arr[] = {0,127,255};
+			mask_colour = Scalar( color_arr[bit1], color_arr[bit2], color_arr[bit3]);
 		}
 
 		my_file_to_read >> centroidx >> delim >> centroidy;
@@ -375,8 +375,6 @@ int main() {
 	//string imgTestFileName = "./Coal/364-5jpg0003.jpg";
 
 	polygonFromMouse(imgTestFileName, 3, 1, true);
-	//polygonFromMouse(imgTestFileName, 3, 2);
-	//polygonFromMouse(imgTestFileName, 3, 3);
 	//showLabeledImage(imgTestFileName, 3);
 
 
